@@ -1,0 +1,27 @@
+ Task 1: create database if not exists kalyan;
+
+add jar /home/orienit/Downloads/hive-hcatalog-core-1.2.1.jar /home/orienit/spark/apache-hive-1.2.1-bin/hcatalog/share/hcatalog/hive-hcatalog-core-1.2.1.jar;
+
+create table if not exists kalyan.employee1_json (empid int,name string,salary int,dept string)
+Row Format SERDE 'org.apache.hive.hcatalog.data.JsonSerDe'
+stored as textfile;
+
+load data local inpath '/home/orienit/spark/input/hive_inputs/employee1.json' overwrite into table kalyan.employee1_json;
+
+select *from employee1_json where empid > 2 and dept = "dev";
+
+create table if not exists kalyan.employee1_op as select *from employee1_json where empid > 2 and dept = "dev";
+
+
+Task 6:
+
+hadoop fs -put /home/orienit/spark/input/student.avro /home/orienit/input/student.avro
+
+hadoop fs -text /home/orienit/input/student.avro
+
+create table if not exists kalyan.student_avro(name string,id int,course string,year int) stored as avro;
+
+load data local inpath '/home/orienit/spark/input/student.avro' overwrite into table kalyan.student_avro;
+
+create table kalyan.student_avro_op as select *from student_avro where id>2 and course ="spark";
+
