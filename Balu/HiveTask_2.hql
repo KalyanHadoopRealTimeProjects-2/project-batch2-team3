@@ -1,5 +1,5 @@
 
-DROP TABLE IF EXISTS employeeRaw;
+DROP TABLE IF EXISTS jsonRaw;
 CREATE TABLE jsonRaw (raw_data string);
 
 LOAD DATA LOCAL INPATH "/home/orienit/Desktop/hive/employee2.json" OVERWRITE INTO TABLE jsonRaw;
