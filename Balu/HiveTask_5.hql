@@ -1,13 +1,9 @@
-➢ Create `kalyan.student_parquet` table with student.parquet file
-➢ Find the employees whose `id` is more than 2 and `course` is `spark`
-➢ Store the results into `kalyan.student_parquet_op` table
-
 
 //HADOOP TERMINAL
 
 parquet-tools schema /home/orienit/Desktop/hive/student.parquet
 
-//OUTPUT CONSOLE FOR PARQUET FILE SCHEMA EVOLTION
+//OUTPUT CONSOLE FOR PARQUET FILE SCHEMA EVOLUTION
 
 message hive_schema {
   optional binary name (UTF8);
