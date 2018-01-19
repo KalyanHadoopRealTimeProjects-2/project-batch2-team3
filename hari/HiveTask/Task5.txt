@@ -1,0 +1,16 @@
+
+CREATE TABLE IF NOT EXISTS kalyan.student_parquet
+( name string, id int , course string, year int )
+ROW FORMAT SERDE 'org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe'
+STORED AS 
+INPUTFORMAT 'org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat'
+OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat';
+
+
+LOAD DATA LOCAL INPATH "/home/orienit/Downloads/hive/student.parquet" OVERWRITE INTO TABLE kalyan.student_parquet;
+
+SELECT * FROM kalyan.student_parquet;
+
+CREATE TABLE kalyan.student_parquet_op AS SELECT * FROM kalyan.student_parquet WHERE id>2 AND course = "spark";
+
+SELECT * FROM kalyan.student_parquet_op;

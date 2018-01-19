@@ -1,0 +1,14 @@
+hadoop fs -mkdir /hive/avro
+hadoop fs -put /home/orienit/Downloads/hive/student.avro /hive/avro
+hadoop fs -text /hive/avro/student.avro
+
+
+
+CREATE TABLE IF NOT EXISTS kalyan.student_avro(name string, id int, course string, year int) STORED AS avro;
+
+LOAD DATA INPATH '/hive/avro/student.avro' OVERWRITE INTO TABLE kalyan.student_avro;
+SELECT * FROM kalyan.student_avro;
+
+CREATE TABLE kalyan.student_avro_op AS SELECT * FROM kalyan.student_avro WHERE id>2 AND course ="spark";
+SELECT * FROM kalyan.student_avro_op;
+ 

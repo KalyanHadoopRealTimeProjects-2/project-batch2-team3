@@ -1,0 +1,22 @@
+create database if not exists kalyan;
+
+use kalyan;
+
+add jar /usr/lib/hive-hcatalog/share/hcatalog/hive-hcatalog-core.jar;
+
+create table if not exists kalyan.employee2_json(empid int,name string,salary int,dept string) ROW FORMAT SERDE 'org.apache.hive.hcatalog.data.JsonSerDe' LOCATION '/hive/HiveTask_2';
+
+
+load data local inpath '/home/orienit/Downloads/hive/employee2.json' into table employee2_json;
+
+select name 
+from employee1_json
+ where empid>2 and dept='dev';
+
+create table kalyan.employee1_op as 
+select *
+from employee1_json
+ where empid>2 and dept='dev';
+
+
+select * from employee2_json;
