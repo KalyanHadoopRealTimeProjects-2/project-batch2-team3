@@ -1,16 +1,13 @@
+put file in hdfs
 
-CREATE TABLE IF NOT EXISTS kalyan.student_parquet
-( name string, id int , course string, year int )
-ROW FORMAT SERDE 'org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe'
-STORED AS 
-INPUTFORMAT 'org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat'
-OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat';
+ hdfs dfs -put /home/orienit/Downloads/hive/student.parquet /user/orienit/hive/student.parquet
+
+go to impala
+
+>> impala-shell
+>>invalidate metadata;
 
 
-LOAD DATA LOCAL INPATH "/home/orienit/Downloads/hive/student.parquet" OVERWRITE INTO TABLE kalyan.student_parquet;
+>>>>create external table kalyan.student_parquet LIKE PARQUET '/home/orienit/Downloads/hive/student.parquet' STORED as PARQUET LOCATION '/user/orienit/hive';
 
 SELECT * FROM kalyan.student_parquet;
-
-CREATE TABLE kalyan.student_parquet_op AS SELECT * FROM kalyan.student_parquet WHERE id>2 AND course = "spark";
-
-SELECT * FROM kalyan.student_parquet_op;

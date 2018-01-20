@@ -1,0 +1,42 @@
+create database if not exists kalyan;
+
+use kalyan;
+
+add jar /home/orienit/Downloads/hivexmlserde-1.0.0.0.jar;
+
+
+create table if not exists kalyan.employee3_xml(empid int,name string,salary int,dept string) row format serde 'com.ibm.spss.hive.serde2.xml.XmlSerDe' 
+WITH SERDEPROPERTIES (
+"column.xpath.empid"="/employee/empid/text()",
+"column.xpath.name"="/employee/name/text()",
+"column.xpath.salary"="/employee/salary/text()",
+"column.xpath.dept"="/employee/dept/text()"
+)
+STORED AS
+INPUTFORMAT 'com.ibm.spss.hive.serde2.xml.XmlInputFormat'
+OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.IgnoreKeyTextOutputFormat'
+TBLPROPERTIES (
+"xmlinput.start"="<employee>",
+"xmlinput.end"="</employee>"
+);
+
+
+
+load data local inpath '/home/orienit/Downloads/hive/employee3.xml' into table employee3_xml;
+
+
+select * from employee2_xml;
+
+
+select name 
+from employee2_xml
+ where empid>2 and dept='dev';
+
+
+
+
+select * from employee2_op;
+
+
+
+
