@@ -22,35 +22,37 @@ select * from employee1_op;
 
 #############################################################################################################################################################
 #############################################################################################################################################################
-create table if not exists kalyan.employee1_xml(name string);
+create table if not exists kalyan.employee1_xml(empid int,name string,salary int,dept string) row format serde 'com.ibm.spss.hive.serde2.xml.XmlSerDe' 
+WITH SERDEPROPERTIES (
+"column.xpath.empid"="/employee/empid/text()",
+"column.xpath.name"="/employee/name/text()",
+"column.xpath.salary"="/employee/salary/text()",
+"column.xpath.dept"="/employee/dept/text()"
+)
+STORED AS
+INPUTFORMAT 'com.ibm.spss.hive.serde2.xml.XmlInputFormat'
+OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.IgnoreKeyTextOutputFormat'
+TBLPROPERTIES (
+"xmlinput.start"="<employee>",
+"xmlinput.end"="</employee>"
+);
 
-create table if not exists kalyan.employee1_xml1(empid string,name string,salary string,dept string);
 
-load data local inpath '/home/orienit/Downloads/hive/employee1.xml' into table employee1_xml1;
 
-select xpath_int(line,'employee/empid'),xpath_string(line,'employee/name'),xpath_string(line,'employee/salary'),xpath_string(line,'employee/dept')from employee1xml;
+load data local inpath '/home/orienit/Downloads/hive/employee1.xml' into table employee1_xml;
+
+
 select * from employee1_xml;
+
+
+select name 
+from employee1_xml
+ where empid>2 and dept='dev';
 
 
 #############################################################################################################################################################
 ############################################################################################################################################################
 
-create table employee1xml(line string)
-LOCATION '/hive/tasks/task1_xml';
-
-create table employee1_xml(empid int, name string, salary int, dept string)
-row format delimited 
-fields terminated by '\t';
-
-insert into table employee1_xml
-select xpath_int(line,'employee/empid'),
-xpath_string(line,'employee/name'),
-xpath_int(line,'employee/salary'),
-xpath_string(line,'employee/dept')from employee1xml;
-
-create table kalyan.employee1_op1 as select * from kalyan.employee1_xml where empid>2 and dept='dev';
-
-select * from kalyan.employee1_op1;
 
 
 
