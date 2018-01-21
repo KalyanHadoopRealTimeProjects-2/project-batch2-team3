@@ -1,0 +1,13 @@
+XML data parsing using regular expressions
+-------------------------------------------
+hdfs dfs -mkdir -p pig
+
+hdfs dfs -put /home/orienit/employee4.xml
+/user/orienit/pig/employee4.json
+
+A=LOAD '/user/orienit/pig/employee4.xml' using JsonLoader('empid:int,name:chararray,salary:int,dept:chararray');
+
+xmldata = load '/user/orienit/pig/employee4.xml' USING org.apache.pig.piggybank.storage.XMLLoader('employee') as(doc:chararray);
+
+data = foreach xmldata GENERATE FLATTEN(REGEX_EXTRACT_ALL(doc,'<employee>\\s*<empid>(.*)</empid>\\s*<name>(.*)</name>\\s*<salary>(.*)</salary>\\s*<dept>(.*)</dept></employee>')) AS ('empid:int,name:chararray,salary:int,dept:chararray');
+
