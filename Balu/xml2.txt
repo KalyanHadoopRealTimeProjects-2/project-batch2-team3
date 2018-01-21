@@ -1,10 +1,6 @@
 add jar /home/orienit/Desktop/hive/hivexmlserde-1.0.5.3.jar;
 
-drop table if exists employee2xml;
-create table employee2xml(line string);
 
-LOAD DATA LOCAL INPATH "/home/orienit/Desktop/hive/employee2.xml" OVERWRITE INTO TABLE employee2xml;
-select * from employee2xml;
  
 create table employee2_xml(empid int, name string, salary string, dept string)
 row format serde ‘com.ibm.spss.hive.serde2.xml.XmlSerDe’

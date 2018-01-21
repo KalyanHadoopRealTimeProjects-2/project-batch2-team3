@@ -1,0 +1,13 @@
+hdfs dfs -mkdir -p pig 
+
+hdfs dfs -put /home/orienit/pig/employee1.json /user/orienit/pig/employee1.json
+
+A= load '/user/orienit/pig/employee1.json' using JsonLoader('empid:int ,name :chararray,salary:int, dept :chararray');
+
+create 'employee','cf'
+
+store A INTO 'hbase://employee1' using org.apache.pig.backend.hadoop.hbase.HBaseStorage('cf:empid cf:name cf:salary cf:dept');
+
+B =LOAD 'hbase://employee1' using org.apache.pig.backend.hadoop.hbase.HBaseStorage('cf:empid cf:name cf:salary cf:dept', '-loadKey true -limit 5') as 
+(empid:int,name:chararray,salary:int,
+dept:chararray);
