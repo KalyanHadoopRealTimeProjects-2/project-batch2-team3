@@ -1,0 +1,36 @@
+
+hdfs dfs -put /home/orienit/pig/employee1.xml /user/orienit/pig/employee1.xml
+
+REGISTER /usr/lib/pig/piggybank.jar
+
+DEFINE XPath org.apache.pig.piggybank.evaluation.xml.XPath();
+
+M = load '/user/orienit/pig/employee1.xml' using org.apache.pig.piggybank.storage.XMLLoader('employee') as (x:chararray);
+
+N = FOREACH M GENERATE XPath(x, 'employee/empid'), XPath(x, 'employee/name'), XPath(x, 'employee/salary'),XPath(x, 'employee/dept');
+
+
+
+
+dump M
+
+dump N
+
+
+employee1_op = store 
+
+
+employee1_op = filter N BY $0 > 2 and $3='dev';
+
+
+
+create 'employee2','cf'
+
+store A INTO 'hbase://employee2' using org.apache.pig.backend.hadoop.hbase.HBaseStorage('cf:empid cf:name cf:salary cf:dept');
+
+B =LOAD 'hbase://employee1' using org.apache.pig.backend.hadoop.hbase.HBaseStorage('cf:empid cf:name cf:salary cf:dept', '-loadKey true -limit 5') as 
+(empid:int,name:chararray,salary:int,
+dept:chararray);
+
+REGISTER /usr/lib/pig/piggybank.jar
+ A =  LOAD ‘/user/test/hadoop_books.xml’ using org.apache.pig.piggybank.storage.XMLLoader(‘BOOK’) as (x:chararray);
