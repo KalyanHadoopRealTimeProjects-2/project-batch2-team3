@@ -1,0 +1,35 @@
+create table empjson3(  empid int,name string, salary int, dept string , details  array<struct< address:string,pincode:int>> )
+ROW FORMAT SERDE 'org.openx.data.jsonserde.JsonSerDe' ;
+------------------------------------------------------------------
+
+
+
+
+
+hive (pra)> select * from empjson3;
+OK
+empjson3.empid  empjson3.name   empjson3.salary empjson3.dept   empjson3.details
+1       kalyan  10000   dev     [{"address":"hyderabad","pincode":500001}]
+2       anvith  15000   testing NULL
+3       raj     5000    testing [{"address":"hyderabad","pincode":500001},{"address":"banglore","pincode":600001}]
+4       venkat  20000   dev     NULL
+5       soni    5000    testing NULL
+6       rajesh  25000   dev     NULL
+------------------------------------------------------------------------------------
+
+
+
+
+
+
+select  e.empid,e.name,e.salary,e.dept, d. address,d.pincode from empjson3 e lateral view inline ( details) d where   d.address = 'hyderabad' ;
+-----------------------------------------o/p-----------------------
+
+ 
+OK
+e.empid e.name  e.salary        e.dept  d.address       d.pincode
+------------- ---------       ----------         ---------    ------------         ----------
+1       kalyan  10000   dev     hyderabad       500001
+3       raj     5000    testing hyderabad       500001
+Time taken: 0.513 seconds, Fetched: 2 row(s)
+---------------------------------------------
