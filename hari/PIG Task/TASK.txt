@@ -1,0 +1,40 @@
+#############Using pig Hcatalog Read the data from hive into pig#####################
+
+[orienit@quickstart ~]$ sudo rm /usr/lib/hadoop-yarn/lib/jline-2.11.jar
+[orienit@quickstart ~]$ pig -useHCatalog
+
+
+A = LOAD 'kalyan.employee1_op' USING org.apache.hive.hcatalog.pig.HCatLoader();
+
+dump A;
+
+####################Apache pig and HBase Integration #####################################################################
+
+PIG
+
+grunt>
+
+hdfs dfs -mkdir -p pig
+
+hdfs dfs -put /home/orienit/Downloads/pig/employee1.json /user/orienit/pig/employee1.json
+
+grunt>B = load '/user/orienit/pig/employee1.json' using JsonLoader('empid:int,name:chararray,salary:int,dept:chararray');
+
+HBASE>>>
+
+create 'employee1', 'cf'
+
+
+
+grunt>STORE B INTO 'hbase://employee1'
+       USING org.apache.pig.backend.hadoop.hbase.HBaseStorage(
+       'cf:empid cf:name cf:salary cf:dept');
+
+
+
+grunt>raw = LOAD 'hbase://employee1'
+       USING org.apache.pig.backend.hadoop.hbase.HBaseStorage(
+       'cf:empid cf:name cf:salary cf:dept', '-loadKey true -limit 5')
+       AS (empid:int, name:chararray, salary:int, dept:chararray);
+
+

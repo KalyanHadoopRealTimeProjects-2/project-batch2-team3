@@ -1,0 +1,28 @@
+use kalyan;
+
+
+(YearStart int,YearEnd int,last_name string,email string,gender string,ip_address string)
+row format serde 'org.apache.hadoop.hive.serde2.OpenCSVSerde' 
+
+with serdeproperties ("separatorChar" = "\t")
+
+[orienit@quickstart ~]$ sudo rm /usr/lib/hadoop-yarn/lib/jline-2.11.jar
+[orienit@quickstart ~]$ pig -useHCatalog
+
+
+create external table kalyan.RiskFactor(a string, b string, ...)
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+tblproperties("skip.header.line.count"="1")
+WITH SERDEPROPERTIES (
+   "separatorChar" = "\t",
+   "quoteChar"     = "'",
+   "escapeChar"    = "\\"
+)  
+stored as textfile
+location '/tmp/serdes/';
+
+
+
+
+
+
