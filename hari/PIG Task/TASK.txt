@@ -14,9 +14,9 @@ PIG
 
 grunt>
 
-hdfs dfs -mkdir -p pig
+HDFS>hdfs dfs -mkdir -p pig
 
-hdfs dfs -put /home/orienit/Downloads/pig/employee1.json /user/orienit/pig/employee1.json
+HDFS>hdfs dfs -put /home/orienit/Downloads/pig/employee1.json /user/orienit/pig/employee1.json
 
 grunt>B = load '/user/orienit/pig/employee1.json' using JsonLoader('empid:int,name:chararray,salary:int,dept:chararray');
 
@@ -24,17 +24,53 @@ HBASE>>>
 
 create 'employee1', 'cf'
 
-
+####  pig-B to Hbase 
 
 grunt>STORE B INTO 'hbase://employee1'
        USING org.apache.pig.backend.hadoop.hbase.HBaseStorage(
        'cf:empid cf:name cf:salary cf:dept');
 
-
+######  Hbase to raw in pig  ------- limit 5   
 
 grunt>raw = LOAD 'hbase://employee1'
        USING org.apache.pig.backend.hadoop.hbase.HBaseStorage(
        'cf:empid cf:name cf:salary cf:dept', '-loadKey true -limit 5')
        AS (empid:int, name:chararray, salary:int, dept:chararray);
+
+
+############  TASK 1 #######################
+
+
+Elephant Bird pig
+
+PiggyBank
+
+data fu
+
+
+DEFINE XPath org.apache.pig.piggybank.evaluation.xml.XPath();
+
+HDFS>hdfs dfs -put /home/orienit/Downloads/pig/employee1.xml /user/orienit/pig/employee1.xml
+
+register '/home/orienit/Downloads/piggybank.jar';
+
+A = LOAD '/user/orienit/pig/employee1.xml' using org.apache.pig.piggybank.storage.XMLLoader('employee') as (employee:chararray);
+
+
+
+B = foreach A generate xpath() as empid,xpath() as name,salary,dept ;
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
