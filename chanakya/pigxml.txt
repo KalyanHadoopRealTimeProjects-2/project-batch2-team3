@@ -3,24 +3,25 @@ hdfs dfs -put /home/orienit/pig/employee1.xml /user/orienit/pig/employee1.xml
 
 REGISTER /usr/lib/pig/piggybank.jar
 
-
+DEFINE XPath org.apache.pig.piggybank.evaluation.xml.XPath();
 
 M = load '/user/orienit/pig/employee1.xml' using org.apache.pig.piggybank.storage.XMLLoader('employee') as (x:chararray);
 
 dump M
 
-N=FOREACH M GENERATE XPath(x, 'employee/empid'), XPath(x, 'employee/name'), XPath(x, 'employee/salary'),XPath(x, 'employee/dept');
+N= foreach M GENERATE XPath(x, 'employee/empid'), XPath(x, 'employee/name'), XPath(x, 'employee/salary'),XPath(x, 'employee/dept');
 
 dump N
 
+Z2 = FOREACH N GENERATE (int)$0 as empid, (chararray)$1 as name, (int)$2 as salary, (chararray)$3 as dept ;
 
-employee1_op = store 
+dump Z2
+
+DESCRIBE Z2
+
+employee1_op = filter Z2 BY $0 > 2 and $3 == 'dev' ;
+
+DUMP employee1_op_
 
 
-employee1_op = filter N BY $0 > 2 and $3='dev';
-
-
-filtered_records = FILTER records BY temperature != 9999 AND (quality == 0 OR quality == 1 OR quality == 4 OR quality == 5 OR quality == 9);
-DUMP filtered_records;
-
-
+STORE employee1_op INTO '/user/orienit/pig/employee1_op' USING PigStorage (',');
