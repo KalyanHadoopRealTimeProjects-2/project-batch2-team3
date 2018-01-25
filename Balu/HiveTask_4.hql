@@ -1,10 +1,9 @@
-//Task3_ Xml
-
 ADD JAR /home/orienit/Desktop/hive/hivexmlserde-1.0.0.0.jar;
 
 USE kalyan;
 
-CREATE TABLE IF NOT EXISTS kalyan.employee3_xml(empid INT, name STRING, salary INT, dept STRING, address STRING, pincode BIGINT, address2 STRING, pincode2 BIGINT)
+DROP TABLE IF EXISTS kalyan.employee4_xml;
+CREATE TABLE IF NOT EXISTS kalyan.employee4_xml(empid INT, name STRING, salary INT, dept STRING, address STRING, pincode BIGINT, address2 STRING, pincode2 BIGINT)
 ROW FORMAT SERDE 'com.ibm.spss.hive.serde2.xml.XmlSerDe'
 WITH SERDEPROPERTIES (
 "column.xpath.empid"="/employee/empid/text()",
@@ -24,10 +23,8 @@ TBLPROPERTIES (
 "xmlinput.end"="</employee>"
 );
 
-LOAD DATA LOCAL INPATH "/home/orienit/Desktop/hive/employee3.xml" OVERWRITE INTO TABLE kalyan.employee3_xml;
+LOAD DATA LOCAL INPATH "/home/orienit/Desktop/hive/employee4.xml" OVERWRITE INTO TABLE kalyan.employee4_xml;
 
-SELECT * FROM employee3_xml WHERE empid >2 AND address ="hyderabad";
+SELECT * FROM kalyan.employee4_xml;
 
-
-
-
+SELECT * FROM employee4_xml WHERE empid =1 AND address ="hyderabad";

@@ -1,51 +1,43 @@
 
-DROP TABLE IF EXISTS jsonRaw;
-CREATE TABLE jsonRaw (raw_data string);
+//Task2_json not working
 
-LOAD DATA LOCAL INPATH "/home/orienit/Desktop/hive/employee2.json" OVERWRITE INTO TABLE jsonRaw;
+USE kalyan;
+ADD JAR /home/orienit/Desktop/hive/jsonserde.jar;
 
+DROP TABLE IF EXISTS kalyan.employee2_json;
+CREATE TABLE IF NOT EXISTS kalyan.employee2_json (empid INT, name STRING, salary INT, dept STRING)
+ROW FORMAT SERDE 'com.amazon.elasticmapreduce.JsonSerde'
+WITH SERDEPROPERTIES ( 'paths'='empid, name, salary, dept' )
+STORED AS TEXTFILE;
 
-DROP TABLE IF EXISTS employee2_jsononeline;
-CREATE TABLE employee2_jsononeline (json_body string)
-STORED AS TEXTFILE LOCATION '/hive/tasks/employee2json';
+LOAD DATA LOCAL INPATH "/home/orienit/Desktop/hive/employee2.json" OVERWRITE INTO TABLE kalyan.employee2_json;
 
-
-INSERT OVERWRITE TABLE employee2_jsononeline
-SELECT CONCAT_WS('',COLLECT_LIST(raw_data)) AS singlelineJSON
-      FROM jsonRaw;
-SELECT * FROM employee2_jsononeline;
-
+SELECT * FROM kalyan.employee2_json;
 
 
-###########incomplete task2_json
-we finished just flatten the input data like below
+//Task2_xml
+
+ADD JAR /home/orienit/Desktop/hive/hivexmlserde-1.0.0.0.jar;
+
+DROP TABLE IF EXISTS kalyan.employee2_xml;
+CREATE TABLE IF NOT EXISTS kalyan.employee2_xml (empid INT, name STRING, salary INT, dept STRING)
+ROW FORMAT SERDE 'com.ibm.spss.hive.serde2.xml.XmlSerDe'
+WITH SERDEPROPERTIES (
+"column.xpath.empid"="/employee/empid/text()",
+"column.xpath.name"="/employee/name/text()",
+"column.xpath.salary"="/employee/salary/text()",
+"column.xpath.dept"="/employee/dept/text()"
+)
+STORED AS
+INPUTFORMAT 'com.ibm.spss.hive.serde2.xml.XmlInputFormat'
+OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.IgnoreKeyTextOutputFormat'
+TBLPROPERTIES (
+"xmlinput.start"="<employee>",
+"xmlinput.end"="</employee>"
+);
 
 
-{     "empid":1,   "name":"kalyan",   "salary":10000,   "dept":"dev"}{     "empid":2,   "name":"anvith",   "salary":15000,   "dept":"testing"}{     "empid":3,   "name":"raj",   "salary":5000,   "dept":"testing"}{     "empid":4,   "name":"venkat",   "salary":20000,   "dept":"dev"}{     "empid":5,   "name":"soni",   "salary":5000,   "dept":"testing"}{     "empid":6,   "name":"rajesh",   "salary":25000,   "dept":"dev"}
+LOAD DATA LOCAL INPATH "/home/orienit/Desktop/hive/employee2.xml" OVERWRITE INTO TABLE kalyan.employee2_xml;
+SELECT * FROM kalyan.employee2_xml;
 
-
-
-
-
-
-
-
-
-
-
-  > SELECT split('oneAtwoBthreeC', '[ABC]') FROM src LIMIT 1;
-  ["one", "two", "three"]
-Time taken: 0.224 seconds, Fetched: 4 row(s)
-
-add jar /usr/lib/hive-hcatalog/share/hcatalog/hive-hcatalog-core.jar;
-
-CREATE TABLE IF NOT EXISTS kalyan.employee2_json (empid string, name string, salary string, dept string)
-ROW FORMAT SERDE 'org.apache.hive.hcatalog.data.JsonSerDe';
-
-INSERT OVERWRITE TABLE kalyan.employee2_json
-SELECT * FROM employee2_jsononeline;
-
-
-
-
-
+SELECT * FROM employee2_xml WHERE empid > 2 AND dept = "dev";
