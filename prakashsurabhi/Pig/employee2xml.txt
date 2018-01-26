@@ -1,0 +1,24 @@
+hdfs dfs -put /home/orienit/pig/employee2.xml /user/orienit/pig/employee2.xml
+
+DEFINE XPath org.apache.pig.piggybank.evaluation.xml.XPath();
+
+A = load '/user/orienit/pig/employee2.xml' using
+ org.apache.pig.piggybank.storage.XMLLoader('employee') as (x:chararray);
+dump A;
+
+N= foreach A GENERATE XPath(x, 'employee/empid'), XPath(x, 'employee/name'), XPath(x, 'employee/salary'),XPath(x, 'employee/dept');
+dump N;
+
+employee2xml= FOREACH N GENERATE (int)$0 as empid, (chararray)$1 as name, (int)$2 as salary, (chararray)$3 as dept ;
+
+dump emp2oyee1xml;
+
+DESCRIBE employee2xml;
+
+employee2xml_op = filter employee2xml BY empid > 2 and dept == 'dev' ;
+DUMP employee2xml_op;
+
+STORE employee1xm2_op INTO '/user/orienit/pig/employee2_op' USING PigStorage (',');
+
+
+

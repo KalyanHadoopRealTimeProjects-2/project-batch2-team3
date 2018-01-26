@@ -1,0 +1,9 @@
+hdfs dfs -put /home/orienit/Downloads/student.parquet /user/orienit/pig/student.parquet
+
+load :----
+
+student_parquet = LOAD '/user/orienit/pig/student.parquet' USING parquet.pig.ParquetLoader(); 
+
+student_parquet_op = filter student_parquet by id > 2 and course == 'spark';
+
+store student_parquet_op into 'hdfs://quickstart.cloudera:8020/user/orienit/pig/student_parquet_o';

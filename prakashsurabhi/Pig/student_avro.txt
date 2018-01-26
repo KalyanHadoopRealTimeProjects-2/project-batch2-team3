@@ -1,0 +1,18 @@
+put the data in hdfs:----
+hdfs dfs -put /home/orienit/pig/student.avro /user/orienit/pig/student.avro
+
+
+REGISTER '/home/orienit/Downloads/avro-1.4.0.jar';
+REGISTER /usr/lib/avro/avro-1.7.6-cdh5.12.0.jar ;
+
+
+student_avro = LOAD '/user/orienit/pig/student.avro' USING org.apache.pig.piggybank.storage.avro.AvroStorage();
+
+student_avro_op = filter student_avro by id > 2 and course == 'spark';
+
+
+
+
+
+
+store student_avro_op into 'hdfs://quickstart.cloudera:8020/user/orienit/pig/student_avro_op
