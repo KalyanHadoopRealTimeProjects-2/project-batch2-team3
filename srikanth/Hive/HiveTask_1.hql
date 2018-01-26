@@ -18,7 +18,7 @@ TBLPROPERTIES (
 "xmlinput.end"="</employee>"
 );
 
-load data local inpath '/home/orienit/Downloads/hive/employee1.xml' into table employee1_xml;
+load data local inpath '/home/orienit/Downloads/hive/employee1.xml' into table kalyan.employee1_xml;
 
 select *from  kalyan.employee1_xml where empid > 2 and dept = "dev";
 
