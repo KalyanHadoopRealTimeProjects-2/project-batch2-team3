@@ -1,26 +1,16 @@
-//Task2_ Xml data
+//Task6_ avro data
 
 put the data in hdfs
-hdfs dfs -put /home/orienit/Downloads/employee2.xml /user/orienit/pig/employee2.xml
+hdfs dfs -put /home/orienit/Downloads/student.avro /user/orienit/pig/student.avro
 
 // then register jar piggbank 
-REGISTER '/home/orienit/Downloads/piggybank-0.15.0.jar'
+REGISTER '/home/orienit/Downloads/avro-1.4.0.jar'
 
-DEFINE XPath org.apache.pig.piggybank.evaluation.xml.XPath();
+//student_avro = LOAD '/user/orienit/pig/student.avro' USING storage.avro.AvroStorage();
 
-//load the xml file
+student_avro = LOAD '/user/orienit/pig/student.avro' USING AvroStorage ();
 
-emp_record = LOAD '/user/orienit/pig/employee2.xml' using org.apache.pig.piggybank.storage.XMLLoader('employee') as (employee:chararray);
+student_avro_op = filter employee_xml by empid > 2 and dept == 'dev';
 
-B_xml = FOREACH emp_record GENERATE XPath(employee,'employee/empid'),XPath(employee,'employee/name'),XPath(employee,'employee/salary'),XPath(employee,'employee/dept');
-
-employee_xml = foreach B_xml generate (int)$0 as empid, (chararray)$1 as name, (int)$2 as salary, (chararray)$3 as dept;
-
-emp_xml = filter employee_xml by empid > 2 and dept == 'dev';
-
-store emp_xml into 'hdfs://quickstart.cloudera:8020/user/orienit/pig/employee2Xml_op';
-
-
-
-// Task2_Json data
+store student_avro_op into 'hdfs://quickstart.cloudera:8020/user/orienit/pig/student_avro_op
 
