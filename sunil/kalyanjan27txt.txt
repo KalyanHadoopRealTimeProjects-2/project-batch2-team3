@@ -1,0 +1,15 @@
+mongodb
+-----------
+1, start the mongodb
+mkdir -p /home/oreinit/kalyan/mongodb_data
+mongod --dbpath=/home/oreinit/kalyan/mongodb_data
+2. connect mongodb
+mongo
+caseendra
+------------
+1. start cassandra
+cassandra -f
+task 1
+----------
+hdfs mkdir -p nosql
+hdfs 
