@@ -1,0 +1,28 @@
+
+
+//impala shell
+
+drop table if exists kalyan.student_parquet;
+
+CREATE external TABLE kalyan.student_parquet LIKE PARQUET '/usr/task/student.parquet' STORED AS PARQUET location '/usr/task/' ;
+
+describe kalyan.student_parquet;
+
+select * from kalyan.student_parquet;
+
+
+//pig latin
+
+
+A = LOAD 'kalyan.student_parquet' USING org.apache.hive.hcatalog.pig.HCatLoader();
+
+dump A
+
+describe A
+
+student_parquet_op = filter A BY $1 > 2 and $2 == 'dev' ;
+
+DUMP student_parquet_op
+
+
+STORE student_parquet_op INTO '/user/orienit/pig/student_parquet_op' USING PigStorage (',');
