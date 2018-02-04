@@ -1,0 +1,13 @@
+oozie::
+
+cloudera/haortonworks-------HUE
+
+hdfs dfs -put /usr/lib/hive/conf/hive-site.xml /user/cloudera/oozie
+
+6,0,*,*,*
+min,hour,day,month,year
+
+
+oozie.wf.application.path://localhost:8020/user/hue/oozie/workspaces/hue-oozie-1517740007.68/workflow.xml
+
+oozie job -oozie http://localhost:11000/oozie -config home/orienit/oozie/job.properties -run

@@ -1,0 +1,41 @@
+Apache kafka::(linkedIn)
+
+producers
+consumers
+brokers
+topics
+groups
+
+---------------------------------------
+
+public subscribe mechanism
+
+
+	p1	p2	p3	(producers)
+
+	
+
+	kafka cluster (broker)------------->> brokers		kafka having distributed storage	1. distributed storage
+													2. partition
+													3.replication
+	c1	c2	c3	(consumers)								4.reliability
+
+
+
+	flume-ng agent -n agent --conf /usr/lib/flume/conf -f /home/orienit/Documents/kalyan-kafka-source-agent.conf
+
+
+java -cp /home/orienit/Documents/kalyan-bigdata-examples.jar \
+com.orienit.kalyan.examples.GenerateServerLog \
+-f /tmp/serverlog.txt \
+-n 100000 \
+-s 10 \
+-d 2016/01/01 \
+-w 100
+
+java -cp /home/orienit/Documents/kalyan-bigdata-examples.jar \
+com.orienit.kalyan.examples.GenerateServerLog
+
+flume-ng agent -n agent --conf /usr/lib/flume/conf -f /home/orienit/Documents/kalyan-kafka-source-agent.conf
+
+

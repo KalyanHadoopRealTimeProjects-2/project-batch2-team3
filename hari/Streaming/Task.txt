@@ -1,0 +1,134 @@
+Streaming::
+
+1. Real time (near real time)
+
+2. Batch
+
+--> Stream
+a) bounded(Start & end)
+b) Unbounded(only start)
+
+--> Streaming data
+
+a) data access
+b) data access & processing
+
+...................................................((flink realtime)) new solution
+
+Streaming data access:: flume,kafka,scribe and chukwa
+
+Streaming data processing :: spark streaming(near real time),storm,flink streaming
+
+Real-time:: Storm,flink streaming
+
+Near real time:: spark streaming,flume,kafka,scribe,chukwa
+
+Batch:: MR,HUE,PIG
+
+....................................................
+
+Apache flume(Cloudera))
+
+Agent::
+
+>>Source(channels)::(avro,exec,spooling and kafka)
+
+>>Channel::(memory,file,kafka)
+
+>>Sink(channel)::(hdfs,avro,kafka)
+
+Sources::
+--------------------------------------------------------------------------------
+
+HDFS sink and Avro sink are used remaining just learing purpose
+
+1.avro source((avro is the best now a days))
+_________
+channels		 
+type	
+bind	
+port
+
+2.Thrift Source((data serialization))
+_________________
+
+channels		 
+type	
+bind	
+port
+
+3.Exec Source{{ difference b/w exce and spooling))
+
+4.Spooling Directory Source((better is spooling))
+
+NOTE: spooling is the better one
+
+5.JMS source((notmuch imp))
+_________________________
+channels
+type
+spoolDir
+
+
+---------------------------------------------------------------------
+
+KAFKA
+
+Kafka Source::
+channels
+type
+kafka.bootstrap.servers
+kafka.topics
+kafka.topics.regex
+
+------------
+
+NetCat TCP Source
+
+channels
+type
+bind
+port
+
+--------------------------------------------------------------------
+
+HDFS Sink
+
+channels
+type
+hdfs.path
+
+Hive Sink(hive 1 introduces ACID)
+cloudera is not working on hive this o version
+because flume is continuely streaming data
+hive is analysing only not appeninding
+so hive sink is not useful
+
+channels
+type
+hive.metastore
+hive.database	
+hive.table
+serializer
+
+Kafka Sink((leading now)
+
+type
+kafka.bootstrap.servers
+
+---------------------------------------------------------------------------------------------------
+
+Flume Channels
+
+Memory Channel //used
+JDBC Channel
+Kafka Channel(future is kafka)
+File Channel//used
+
+__________________________________________________________________________________________________________
+__________________________________________________________________________________________________________
+
+
+how to write a agent file::
+
+<agent>.sources

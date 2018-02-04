@@ -1,0 +1,57 @@
+hdfs dfs -mkdir -p nosql
+
+MongoDB::
+
+1. start the mongodb
+
+mkdir -p /home/orienit/kalyan/mongodb_data
+
+mongod -dbpath=/home/orienit/kalyan/mongodb_data
+
+2. connect to mongodb
+mongo
+
+Cassandra::
+
+1. start the cassandra
+
+cassandra -f
+
+2. connect to cassandra
+cqlsh
+
+TASK 1::
+
+
+hdfs dfs -mkdir -p nosql
+
+hdfs dfs -put /home/orienit/Downloads/nosql/employee1.csv /user/orienit/nosql/employee1.csv
+
+HBASE::
+
+hbase shell
+
+create 'employee1_csv','cf1'
+
+create 'employee1_tsv','cf'
+
+#################################row key is id       so we don't give in family
+
+hbase org.apache.hadoop.hbase.mapreduce.ImportTsv –Dimporttsv.columns=HBASE_ROW_KEY,cf:name,cf:salary,cf:dept -Dimporttsv.separator=, 'employee1_csv' 
+/user/orienit/nosql/employee1.csv
+
+
+
+
+
+
+
+TASK>> 3
+
+
+
+hdfs dfs -put /home/orienit/Downloads/nosql/employee1.json /user/orienit/nosql/employee1.json
+
+
+
+

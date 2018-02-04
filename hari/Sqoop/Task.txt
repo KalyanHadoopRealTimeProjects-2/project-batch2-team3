@@ -1,0 +1,232 @@
+TASK 1:
+
+sudo ln -s /usr/lib/oozie/libserver/json-20090211.jar /usr/lib/sqoop/lib/json-20090211.jar
+
+sqoop import --connect "jdbc:mysql://quickstart.cloudera:3306/retail_db" \
+--username root --password cloudera \
+--driver com.mysql.jdbc.Driver \
+--table categories \
+--as-textfile \
+--fields-terminated-by ':' \
+--target-dir "hdfs://quickstart.cloudera:8020/user/orienit/sqoop/categories" \
+-m 2
+
+
+TASK 2
+
+create a directory
+
+hdfs dfs -mkdir -p /home/orienit/sqoop
+
+touch___create an empty file
+
+touch /home/orienit/sqoop/db1.properties
+
+update /home/orienit/sqoop/db1.properties by below lines
+
+--connect "jdbc:mysql://quickstart.cloudera:3306/retail_db" \
+--username root \
+--password cloudera
+
+
+
+sqoop import \
+--options-file /home/orienit/sqoop/db1.properties \
+--table categories \
+--as-avrodatafile \
+--fields-terminated-by ':' \
+--target-dir "hdfs://quickstart.cloudera:8020/user/orienit/sqoop/categories2" \
+-m 2
+
+
+TASK 3;;
+
+hide the password
+
+touch /home/orienit/sqoop/db2.properties
+touch /home/orienit/sqoop/db.password
+
+##########update db.password to hiding password
+
+echo -n "cloudera" > /home/orienit/sqoop/db.password
+
+##############update /home/orienit/sqoop/db2.properties lines
+
+--connect "jdbc:mysql://quickstart.cloudera:3306/retail_db" \
+--username root --password-file touch /home/orienit/sqoop/db.password
+
+
+sqoop import \
+--options-file /home/orienit/sqoop/db1.properties
+--table categories \
+--as-parquetfile \
+--fields-terminated-by ':' \
+--target-dir "hdfs://quickstart.cloudera:8020/user/orienit/sqoop/categories3" \
+-m 2
+
+______________________________________________________________________________________________________________________________
+
+TASK 3;;  from HDFS 
+
+hide the password
+
+touch /home/orienit/sqoop/db2.properties
+touch /home/orienit/sqoop/db.password
+
+##########update db.password to hiding password
+
+echo -n "cloudera" > /home/orienit/sqoop/db.password
+
+##############update /home/orienit/sqoop/db2.properties lines
+
+--connect "jdbc:mysql://quickstart.cloudera:3306/retail_db" \
+--username root --password-file hdfs://quickstart.cloudera:8020/user/orienit/sqoop/categories3
+
+
+sqoop import \
+--options-file /home/orienit/sqoop/db2.properties
+--table categories \
+--as-parquetfile \
+--fields-terminated-by ':' \
+--target-dir "hdfs://quickstart.cloudera:8020/user/orienit/sqoop/categories3" \
+-m 2
+______________________________________________________________________________________________________________________________
+
+
+
+TASK 4
+
+sqoop job --create myjob \
+--import \
+--options-file /home/orienit/sqoop/db3.properties \
+--table categories \
+--as-sequencefile \
+--fields-terminated-by ':' \
+--delete-target-dir \
+--compress \
+--compression-codec org.apache.hadoop.io.compress.BZip2codec \
+--target-dir=hdfs://quickstart.cloudera:8020/user/orienit/sqoop/categories3 \
+-m 2
+
+sqoop job --show myjob
+
+sqoop job --exec myjob
+
+TASK 5
+
+sqoop import \
+  --options-file /home/orienit/sqoop/db3.properties \
+  --table categories \
+  --as-textfile \
+  --fields-terminated-by ':' \
+  --hive-import \
+  --create-hive-table \
+  --hive-table kalyan.categories1 \
+  --delete-target-dir \
+  --target-dir=hdfs://quickstart.cloudera:8020/user/orienit/sqoop/categories5 \
+  -m 2
+
+_________________________________________________________________________________________________
+
+sqoop import \
+  --connect "jdbc:mysql://quickstart.cloudera:3306/retail_db" \
+--username root --password cloudera \
+ --table categories \
+  --as-textfile \
+  --fields-terminated-by ':' \
+  --hive-import \
+  --create-hive-table \
+  --hive-table kalyan.categories1 \
+  --target-dir=hdfs://quickstart.cloudera:8020/user/orienit/sqoop/categories5 \
+  -m 2
+
+
+TASK 6
+
+sqoop import \
+  --options-file /home/orienit/sqoop/db3.properties \
+  --table categories \
+  --as-textfile \
+  --fields-terminated-by ':' \
+  --hbase-create-table \
+  --hbase-table categories1 \
+  --column-family cf \
+  --hbase-row-key category_id 
+  --delete-target-dir \
+  --target-dir=hdfs://quickstart.cloudera:8020/user/orienit/sqoop/categories5 \
+  -m 2
+
+_________________________________________________________________________________________________
+
+sqoop import \
+  --connect "jdbc:mysql://quickstart.cloudera:3306/retail_db" \
+--username root --password cloudera \
+ --table categories \
+  --as-textfile \
+  --fields-terminated-by ':' \
+  --hbase-create-table \
+  --hbase-table categories1 \
+  --column-family cf \
+  --hbase-row-key category_id 
+  --delete-target-dir \
+  --target-dir=hdfs://quickstart.cloudera:8020/user/orienit/sqoop/categories5 \
+  -m 2
+
+
+TASK 7
+
+mysql -u root -p
+
+create table retail_db.categories1 like retail_db.categories;
+
+sqoop export \
+  --options-file /home/orienit/sqoop/db2.properties \
+  --table categories1 \
+  --as-textfile \
+  --input-fields-terminated-by ':' \
+  --export-dir=hdfs://quickstart.cloudera:8020/user/orienit/sqoop/categories \
+  -m 2
+
+
+
+
+
+TASK 8
+
+
+
+
+sqoop export \
+  --options-file /home/orienit/sqoop/db2.properties \
+  --table categories1 \
+  --as-textfile \
+  --input-fields-terminated-by ':' \
+  --update-key category_id \
+  --update-mode allowinsert \
+  --export-dir=hdfs://quickstart.cloudera:8020/user/orienit/sqoop/categorie2 \
+  -m 2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
