@@ -1,11 +1,6 @@
 REGISTER /usr/lib/pig/piggybank.jar
 REGISTER /usr/lib/pig/lib/avro.jar
 
-
-
-
-
-
 A = LOAD '/usr/task1/student.avro' USING org.apache.pig.piggybank.storage.avro.AvroStorage();
 describe A
 dump A
