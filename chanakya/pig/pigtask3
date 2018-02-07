@@ -1,0 +1,36 @@
+
+
+
+A = LOAD '/user/orienit/pig/employee3.json' 
+    USING JsonLoader('empid:int, name:chararray,salary:int, dept:chararray,
+                      details:(address:chararray, pincode:int)');
+
+
+dump A
+
+
+B = foreach A generate $0,$1,$2,$3,flatten($4);
+
+dump B
+
+employee3_op= filter B BY $0 > 2 and $4 == 'hyderabad' ;  
+
+STORE employee3_op INTO '/user/orienit/pig/employee3_op' USING PigStorage (',');
+
+
+
+the other way
+---------------
+A = LOAD '/user/orienit/pig/employee3.json' 
+    USING JsonLoader('empid:int, name:chararray,salary:int, dept:chararray,
+                      details:(address:chararray, pincode:int)');
+
+
+dump A
+
+
+employee3_op= filter A BY $0 > 2 and $4.$0 == 'hyderabad' ;
+
+
+
+STORE employee3_op INTO '/user/orienit/pig/employee3_op' USING PigStorage (',');

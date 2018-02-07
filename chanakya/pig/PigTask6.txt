@@ -1,0 +1,16 @@
+REGISTER /usr/lib/pig/piggybank.jar
+REGISTER /usr/lib/pig/lib/avro.jar
+
+A = LOAD '/usr/task1/student.avro' USING org.apache.pig.piggybank.storage.avro.AvroStorage();
+describe A
+dump A
+
+student_avro_op = filter A BY $1 > 2 and $2 == 'dev' ;
+
+
+DUMP student_avro_op
+
+
+STORE student_avro_op INTO '/user/orienit/pig/student_avro_op' USING PigStorage (',');
+
+
