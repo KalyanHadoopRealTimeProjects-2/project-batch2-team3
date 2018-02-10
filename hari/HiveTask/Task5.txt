@@ -1,3 +1,5 @@
+Parquet with Impala
+
 put file in hdfs
 
  hdfs dfs -put /home/orienit/Downloads/hive/student.parquet /user/orienit/hive/student.parquet

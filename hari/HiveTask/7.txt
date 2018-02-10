@@ -1,3 +1,6 @@
+USE CSV SERDE
+
+
 use kalyan;
 
 
