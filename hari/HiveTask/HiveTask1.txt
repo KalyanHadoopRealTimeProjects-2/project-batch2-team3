@@ -4,6 +4,8 @@ use kalyan;
 
 add jar /usr/lib/hive-hcatalog/share/hcatalog/hive-hcatalog-core.jar;
 
+add jar /home/orienit/Downloads/hive-hcatalog-core-1.2.1.jar
+
 create table if not exists kalyan.employee1_json(empid int,name string,salary int,dept string) ROW FORMAT SERDE 'org.apache.hive.hcatalog.data.JsonSerDe' LOCATION '/hive/HiveTask_1';
 
 load data local inpath '/home/orienit/Downloads/hive/employee1.json' into table employee1_json;
@@ -22,7 +24,11 @@ select * from employee1_op;
 
 #############################################################################################################################################################
 #############################################################################################################################################################
-create table if not exists kalyan.employee1_xml(empid int,name string,salary int,dept string) row format serde 'com.ibm.spss.hive.serde2.xml.XmlSerDe' 
+
+ADD JAR /home/orienit/Downloads/hivexmlserde-1.0.0.0.jar;
+
+create table if not exists kalyan.employee1_xml(empid int,name string,salary int,dept string)
+row format serde 'com.ibm.spss.hive.serde2.xml.XmlSerDe'
 WITH SERDEPROPERTIES (
 "column.xpath.empid"="/employee/empid/text()",
 "column.xpath.name"="/employee/name/text()",
@@ -37,13 +43,9 @@ TBLPROPERTIES (
 "xmlinput.end"="</employee>"
 );
 
+load data local inpath '/home/orienit/Downloads/hive/employee1.xml' into table kalyan.employee1_xml;
 
-
-load data local inpath '/home/orienit/Downloads/hive/employee1.xml' into table employee1_xml;
-
-
-select * from employee1_xml;
-
+select *from  kalyan.employee1_xml where empid > 2 and dept = "dev";
 
 select name 
 from employee1_xml
