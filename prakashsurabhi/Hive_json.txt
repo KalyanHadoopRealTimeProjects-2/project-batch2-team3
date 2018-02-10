@@ -1,0 +1,60 @@
+set hive.cli.print.current.db=true;
+set hive.cli.print.header=true;
+
+
+ADD JAR /home/orienit/json-serde-1.3.8-jar-with-dependencies.jar;
+ADD JAR /usr/lib/hive-hcatalog/share/hcatalog/hive-hcatalog-core.jar;
+ADD JAR /home/orienit/kalyan-bigdata-utils.jar;
+===================Task-1============================
+CREATE TABLE employee1_json(empid int, name string,  salary int,dept string)
+ROW FORMAT SERDE 'org.apache.hive.hcatalog.data.JsonSerDe'
+STORED AS TEXTFILE;
+
+LOAD DATA LOCAL INPATH '/home/orienit/HiveTask/employee1.json' INTO TABLE employee1_json;
+.............
+select * from employee1_json;
+create table employee1_op as select * from employee1_json where empid>2 and dept='dev';
+select * from employee1_op;
+
+
+=========================task-2==============================
+
+CREATE TABLE employee2_json(empid int, name string,  salary int,dept string)
+ROW FORMAT SERDE 'org.apache.hive.hcatalog.data.JsonSerDe'
+STORED AS
+INPUTFORMAT 'com.orienit.kalyan.mapred.multiline.KalyanMultiLineInputFormat'
+OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.IgnoreKeyTextOutputFormat';
+
+load data local inpath '/home/orienit/HiveTask/employee2.json.txt' into table employee2_json;
+..............
+select * from employee2_json;
+create table employee2_op as select * from employee2_json where empid>2 and dept='dev';
+select * from employee2_op;
+
+
+=====================task-3================================
+create table employee3_json(empid int,name string, salary int, dept string , details  array<struct< address:string,pincode:int>> )
+ROW FORMAT SERDE 'org.openx.data.jsonserde.JsonSerDe';
+
+
+load data local inpath '/home/orienit/HiveTask/employee3.json.txt' into table employee3_json;
+
+create table employee2_op as select  e.empid,e.name,e.salary,e.dept, d. address,d.pincode from empjson3 e lateral view inline ( details) d where   d.address = 'hyderabad' ;
+
+select * from employee3_op;
+
+========================task-4==================================
+CREATE TABLE employee4_json(empid int, name string,  salary int,dept string,
+details array<struct<address:string,pincode:bigint>>)
+ROW FORMAT SERDE 'org.openx.data.jsonserde.JsonSerDe'
+STORED AS
+INPUTFORMAT 'com.orienit.kalyan.mapred.multiline.KalyanMultiLineInputFormat'
+OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.IgnoreKeyTextOutputFormat';
+
+load data local inpath '/home/orienit/HiveTask/employee4.json.txt' into table employee4_json;
+
+===========
+
+
+
+
