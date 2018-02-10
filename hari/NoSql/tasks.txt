@@ -2,6 +2,10 @@ hdfs dfs -mkdir -p nosql
 
 MongoDB::
 
+Mongodb with spark and etc
+Single json recore will insert in cassandra not file
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&   Mongodb connector
+
 1. start the mongodb
 
 mkdir -p /home/orienit/kalyan/mongodb_data
@@ -42,7 +46,9 @@ hbase org.apache.hadoop.hbase.mapreduce.ImportTsv –Dimporttsv.columns=HBASE_ROW_
 
 
 
+TASK 2
 
+REGEX  
 
 
 

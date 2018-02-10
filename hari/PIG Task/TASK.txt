@@ -38,3 +38,7 @@ grunt>raw = LOAD 'hbase://employee1'
        AS (empid:int, name:chararray, salary:int, dept:chararray);
 
 
+##############################################################
+
+TASK 2
+
