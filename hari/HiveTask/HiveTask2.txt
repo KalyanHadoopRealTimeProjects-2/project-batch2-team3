@@ -5,7 +5,10 @@ use kalyan;
 add jar /home/orienit/Downloads/hivexmlserde-1.0.0.0.jar;
 
 
-create table if not exists kalyan.employee2_xml(empid int,name string,salary int,dept string) row format serde 'com.ibm.spss.hive.serde2.xml.XmlSerDe' 
+//Task2_ Xml data
+
+create table if not exists kalyan.employee2_xml(empid int,name string,salary int,dept string)
+row format serde 'com.ibm.spss.hive.serde2.xml.XmlSerDe'
 WITH SERDEPROPERTIES (
 "column.xpath.empid"="/employee/empid/text()",
 "column.xpath.name"="/employee/name/text()",
@@ -20,23 +23,12 @@ TBLPROPERTIES (
 "xmlinput.end"="</employee>"
 );
 
-
-
 load data local inpath '/home/orienit/Downloads/hive/employee2.xml' into table employee2_xml;
 
+select *from employee2_xml where empid > 2 and dept ="dev";
 
-select * from employee2_xml;
+load data local inpath '/home/orienit/Downloads/hive/employee1.xml' into table employee1_xml;
 
-
-select name 
-from employee2_xml
- where empid>2 and dept='dev';
-
-
-
-
-select * from employee2_op;
-
-
+create table if not exists kalyan.employee2_op as select *from employee2_xml where empid > 2 and dept = "dev";
 
 

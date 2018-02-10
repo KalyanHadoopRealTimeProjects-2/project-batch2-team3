@@ -1,6 +1,6 @@
 //Task1_ Xml data
 
-ADD JAR /home/orienit/Downloads/hivexmlserde-1.0.0.0.jar
+ADD JAR /home/orienit/Downloads/hivexmlserde-1.0.0.0.jar;
 
 create table if not exists kalyan.employee1_xml(empid int,name string,salary int,dept string)
 row format serde 'com.ibm.spss.hive.serde2.xml.XmlSerDe'
