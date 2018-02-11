@@ -1,0 +1,256 @@
+1. Generate `product log` data using Kalyan utils
+2. Use flume to trasfter the data to hdfs
+3. Use oozie create partitions on flume data in hive
+4. Transfer hive data into hbase using hive-hbase integration
+5. Use hbase-phoenix integration to check the data using SQL operations
+6. Visualize the phoenix / hive data using UI Tools
+NOTE: Update `~/.bashrc` file with below line
+export KALYAN_PROJECTS=/home/orienit/kalyan_bigdata_projects
+
+-----------------------------------------------------------------------------------------------------------
+1. EXECUTE BELOW HIVE OPERATIONS
+
+CREATE DATABASE IF NOT EXISTS KALYAN;
+
+DROP TABLE IF EXISTS KALYAN.PRODUCTLOGS ;
+
+CREATE EXTERNAL TABLE IF NOT EXISTS KALYAN.PRODUCTLOGS (
+USERID BIGINT,
+USERNAME STRING,
+EMAIL STRING,
+PRODUCT STRING,
+TRANSACTION STRING,
+COUNTRY STRING,
+STATE STRING,
+CITY STRING,
+DT STRING
+)
+PARTITIONED BY (CDT STRING, HR STRING, MNT STRING)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+STORED AS TEXTFILE;
+
+SELECT * FROM KALYAN.PRODUCTLOGS LIMIT 5;
+
+1. HBASE COMMANDS: hbase shell
+
+create_namespace 'KALYAN'
+
+create 'KALYAN:PRODUCTLOG','CF1','CF2'
+
+2. HIVE COMMANDS:
+
+DROP TABLE IF EXISTS KALYAN.PRODUCTLOG;
+
+############  Create normal external table because,IN hive-hbase integration Hbase doesn't support partition
+
+so we'go therogh normal table..
+
+CREATE EXTERNAL TABLE IF NOT EXISTS KALYAN.PRODUCTLOG (
+KEY STRING,
+USERID BIGINT,
+USERNAME STRING,
+EMAIL STRING,
+PRODUCT STRING,
+TRANSACTION STRING,
+COUNTRY STRING,
+STATE STRING,
+CITY STRING,
+DT STRING
+)
+STORED BY 'org.apache.hadoop.hive.hbase.HBaseStorageHandler'
+WITH SERDEPROPERTIES (
+"hbase.columns.mapping" =
+":key,CF1:USERID,CF1:USERNAME,CF1:EMAIL,CF1:PRODUCT,CF1:TRANSACTIO
+N,CF2:COUNTRY,CF2:STATE,CF2:CITY,CF2:DT"
+)
+TBLPROPERTIES ("hbase.table.name" = "KALYAN:PRODUCTLOG");
+
+SELECT * FROM KALYAN.PRODUCTLOG LIMIT 5;
+
+3. EXECUTE BELOW PHOENIX-HBASE INTEGRATION OPERATIONS
+
+
+>> PHOENIX__There is no Auto incremnet feature 
+
+sqlline.py localhost
+
+DROP VIEW IF EXISTS "KALYAN:PRODUCTLOG";
+
+CREATE VIEW IF NOT EXISTS "KALYAN:PRODUCTLOG" (
+PK VARCHAR NOT NULL PRIMARY KEY,
+CF1.USERID VARCHAR,
+CF1.USERNAME VARCHAR,
+CF1.EMAIL VARCHAR,
+CF1.PRODUCT VARCHAR,
+CF1.TRANSACTION VARCHAR,
+CF2.COUNTRY VARCHAR,
+CF2.STATE VARCHAR,
+CF2.CITY VARCHAR,
+CF2.DT VARCHAR
+);
+
+DROP TABLE IF EXISTS "KALYAN:USERS";
+
+CREATE TABLE IF NOT EXISTS "KALYAN:USERS" (
+USERID BIGINT NOT NULL PRIMARY KEY,
+USERNAME VARCHAR,
+PASSWORD VARCHAR,
+EMAIL VARCHAR,
+COUNTRY VARCHAR,
+STATE VARCHAR,
+CITY VARCHAR,
+DT VARCHAR
+);
+
+CREATE SEQUENCE USERID_SEQ;
+
+--------------------------------------------
+4. EXECUTE BELOW FLUME OPERATIONS
+
+GO to VMWARE
+
+click on ORIENIT HOME---
+
+create new folder name is Kalyan_Bigdata_Projects
+
+copy the data kalyan proj1 and proj2 into that folder
+
+Kalyan_Real_Time_BigData_Project_1
+
+Kalyan_Real_Time_BigData_Project_2
+
+
+kalyan-productlog-hdfs-agent.conf  name hdfsagent  -- is missing
+
+New terminal and execute the flume command and changes the mistakes in name
+
+sudo flume-ng agent -n agent --conf /usr/lib/flume-ng/conf -f $KALYAN_PROJECTS/Kalyan_Real_Time_BigData_Project_1/kalyan-productlog-hdfs-agent.conf
+
+DON'T CLOSE THIS TERMINAL
+
+-----------------------------------------------------------------------------------------------------------
+5. EXECUTE BELOW KALYAN UTILS OPERATIONS
+----------------------------------------------------------------------------
+
+MISTAKES in line please  change that jar in one line and put the - in bigdata and examples
+and l is the log files if u want u can change also
+
+open new termianl and execute the command
+
+java -cp $KALYAN_PROJECTS/Kalyan_Real_Time_BigData_Project_1/kalyan-bigdata-examples.jar \
+com.orienit.kalyan.examples.GenerateProductLog \
+-f /tmp/productlog.csv \
+-d ',' \
+-n 100 \
+-l 100000
+
+----------------------LOGS STARTED-------------------
+
+
+get the above message
+
+
+6. EXECUTE BELOW OOZIE OPERATIONS
+
+execute the below command in vmware
+
+>>  system--> preference-->  Screensaver preferences  -->> increase the time
+
+
+1. Update `oozie-site.xml` file with below properties
+
+
+
+Command: sudo gedit /etc/oozie/conf/oozie-site.xml
+	
+After configuration..
+
+<property>
+<name>oozie.processing.timezone</name>
+<value>GMT+0530</value>
+</property>
+<property>
+<name>oozie.service.coord.check.maximum.frequency</name>
+<value>false</value>
+</property>
+
+
+save and close it..
+
+########    Restart the oozie otherwise it's not working...
+
+2. Restart the OOZIE with below command
+
+Command: sudo service oozie restart
+
+3. Execute below commands for oozie app
+
+in the last oozie . ( .) is fixed means current user foder in HDFS..
+
+hadoop fs -put $KALYAN_PROJECTS/Kalyan_Real_Time_BigData_Project_1/kalyan-project-oozie .
+
+
+4. Update `job.properties` file with proper start, end and initial time information
+
+E:\kalyan_project_training_data_batch_2\kalyan_project_batch_data\Kalyan_Real_Time_BigData_Projects\Kalyan_Real_Time_BigData_Project_1\kalyan-project-oozie
+
+change the time job.properties file and
+
+$KALYAN_PROJECTS/Kalyan_Real_Time_BigData_Project_1/kalyan-projectoozie/job.properties
+
+change the time job.properties file and edit as per yours
+
+start:2018-02-11T117:15+0530
+end:2018-02-11T19:00+0530
+Initial=2018-02-11T17:15+0530
+
+$OOZIE_HOME/bin/oozie job -oozie http://localhost:11000/oozie -config $KALYAN_PROJECTS/Kalyan_Real_Time_BigData_Project_1/kalyan-project-oozie/job.properties -run
+
+Any error:: vmware-- terminal--oozie-site.xml
+
+-----------------------------------------------------------------------------------------------------------
+7. VISUALIZE THE PHOENIX / HIVE DATA USING UI TOOLS
+-----------------------------------------------------------------------------------------------------------
+
+install tomcat in vmware steps are given in the txt file
+
+1. Install the `tomcat`
+2. Copy `kalyan-project-1.war` file into `tomcat/webapps` folder
+
+>>echo $TOMCAT_HOME
+
+3. Start the `tomcat`
+
+>> startup.sh
+
+
+
+4. Open the browser with below URL
+http://localhost:8080/kalyan-project-1
+
+http://192.168.206.128:8080/kalyan-project-1
+
+
+5. Play with Real Time Project
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
