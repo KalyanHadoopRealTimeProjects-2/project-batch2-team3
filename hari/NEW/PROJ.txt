@@ -219,6 +219,8 @@ install tomcat in vmware steps are given in the txt file
 1. Install the `tomcat`
 2. Copy `kalyan-project-1.war` file into `tomcat/webapps` folder
 
+copy tomcat folder in kalyan_bigdata_project example
+
 >>echo $TOMCAT_HOME
 
 3. Start the `tomcat`
