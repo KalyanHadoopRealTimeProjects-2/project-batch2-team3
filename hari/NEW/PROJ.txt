@@ -227,6 +227,9 @@ copy tomcat folder in kalyan_bigdata_project example
 
 >> startup.sh
 
+3. Stop the `tomcat`
+
+>> shutdown.sh
 
 
 4. Open the browser with below URL
@@ -241,15 +244,52 @@ http://192.168.206.128:8080/kalyan-project-1
 
 
 
+6. Execute below command to STOP the oozie app
+
+$OOZIE_HOME/bin/oozie job -oozie http://localhost:11000/oozie -kill 0000003-180217185930513-oozie-oozi-W
+
+
+
+##########  Change no of containers
+
+
+
+sudo gedit /etc/hadoop/conf/yarn-site.xml
 
 
 
 
 
+<property>
+  <name>yarn.nodemanager.resource.memory-mb</name>
+  <value>4096</value>
+</property>
+<property>
+  <name>yarn.nodemanager.resource.cpu-vcores</name>
+  <value>4</value>
+</property>
+
+
+
+change to 8192
+
+change 4 to 8
 
 
 
 
+<property>
+  <name>yarn.nodemanager.resource.memory-mb</name>
+  <value>8192</value>
+</property>
+<property>
+  <name>yarn.nodemanager.resource.cpu-vcores</name>
+  <value>8</value>
+</property>
+
+
+sudo service hadoop-yarn-resourcemanager restart
+sudo service hadoop-yarn-nodemanager restart
 
 
 
