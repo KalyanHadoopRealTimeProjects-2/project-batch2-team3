@@ -113,7 +113,7 @@ GO to VMWARE
 
 click on ORIENIT HOME---
 
-create new folder name is Kalyan_Bigdata_Projects
+create new folder name is kalyan_bigdata_projects
 
 copy the data kalyan proj1 and proj2 into that folder
 
@@ -125,6 +125,8 @@ Kalyan_Real_Time_BigData_Project_2
 kalyan-productlog-hdfs-agent.conf  name hdfsagent  -- is missing
 
 New terminal and execute the flume command and changes the mistakes in name
+
+sudo flume-ng agent -n agent --conf /usr/lib/flume-ng/conf -f $KALYAN_PROJECTS/Kalyan_Real_Time_BigData_Project_1/kalyan-productlog-hdfs-agent.conf
 
 sudo flume-ng agent -n agent --conf /usr/lib/flume-ng/conf -f $KALYAN_PROJECTS/Kalyan_Real_Time_BigData_Project_1/kalyan-productlog-hdfs-agent.conf
 
